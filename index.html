@@ -26,7 +26,7 @@
             flex-direction: column;
             align-items: center; /* Center content horizontally within the screen */
             justify-content: flex-start; /* Aligns content to the top */
-            padding: 2rem 1rem;
+            /* Removed padding from .screen, now applied to .screen-content-wrapper */
             box-sizing: border-box; /* Include padding in total width/height */
             position: fixed; /* Fixed positioning to cover the entire screen */
             top: 0;
@@ -59,12 +59,9 @@
             max-width: 2xl; /* Limit for content width */
             overflow-y: auto; /* This wrapper handles scrolling */
             -webkit-overflow-scrolling: touch; /* Improve scrolling on iOS */
-            padding-top: 0.5rem; /* Internal padding so content doesn't stick to the top */
-            padding-bottom: 0.5rem; /* Internal padding so content doesn't stick to the bottom */
+            padding: 2rem 1rem; /* Padding now applied here */
             box-sizing: border-box;
-            /* Added for vertical centering if content is short, and align-top if long */
-            margin-top: auto;
-            margin-bottom: auto;
+            /* Removed margin-top/bottom: auto to ensure top alignment by default */
         }
 
         .menu-card {
