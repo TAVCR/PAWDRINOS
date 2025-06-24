@@ -186,11 +186,17 @@
         .back-button {
             background-color: #555;
             color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
+            /* Removed padding: 0.75rem 1.5rem; and margin-bottom: 1rem; */
+            width: 2.5rem; /* Fixed width for the circular button */
+            height: 2.5rem; /* Fixed height for the circular button */
+            border-radius: 9999px; /* Make it circular */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem; /* Size of the 'X' */
+            font-weight: bold;
             cursor: pointer;
-            font-weight: 600;
-            margin-bottom: 1rem;
+            transition: background-color 0.3s ease;
             position: fixed; /* Ensure back button is fixed in the viewport */
             top: 1rem;
             left: 1rem;
@@ -237,7 +243,7 @@
 
     <!-- Basic Program Screen -->
     <div id="program-basico-screen" class="screen">
-        <button class="back-button" data-target-screen="main-menu-screen">Volver</button>
+        <button class="back-button" data-target-screen="main-menu-screen">X</button>
         <div class="screen-content-wrapper">
             <div class="program-details-content">
                 <h3 class="text-2xl font-semibold mb-3 program-title-basico">Programa Básico (4 Sesiones)</h3>
@@ -259,7 +265,7 @@
 
     <!-- Intermediate Program Screen -->
     <div id="program-intermedio-screen" class="screen">
-        <button class="back-button" data-target-screen="main-menu-screen">Volver</button>
+        <button class="back-button" data-target-screen="main-menu-screen">X</button>
         <div class="screen-content-wrapper">
             <div class="program-details-content">
                 <h3 class="text-2xl font-semibold mb-3 program-title-intermedio">Programa Intermedio (6 Sesiones)</h3>
@@ -291,7 +297,7 @@
 
     <!-- Progressive Program Screen -->
     <div id="program-progresivo-screen" class="screen">
-        <button class="back-button" data-target-screen="main-menu-screen">Volver</button>
+        <button class="back-button" data-target-screen="main-menu-screen">X</button>
         <div class="screen-content-wrapper">
             <div class="program-details-content">
                 <h3 class="text-2xl font-semibold mb-3 program-title-progresivo">Programa Progresivo (8 Sesiones)</h3>
@@ -324,7 +330,7 @@
 
     <!-- Complete Program Screen -->
     <div id="program-completo-screen" class="screen">
-        <button class="back-button" data-target-screen="main-menu-screen">Volver</button>
+        <button class="back-button" data-target-screen="main-menu-screen">X</button>
         <div class="screen-content-wrapper">
             <div class="program-details-content">
                 <h3 class="text-2xl font-semibold mb-3 program-title-completo">Programa Completo (12 Sesiones)</h3>
