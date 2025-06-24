@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú de Programas de Adiestramiento - Pawdrinos</title>
+    <!-- Incluye Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Enlace a la fuente Montserrat de Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        html, body {
+            height: 100%; /* Ensure html and body take full height */
+        }
+        body {
+            font-family: 'Montserrat', sans-serif; /* Using Montserrat font */
+            background-color: #0b1a3d; /* Dark background color */
+            color: #ffffff; /* White text color */
+            margin: 0; /* Ensure no default body margins */
+            overflow: hidden; /* Prevent scroll on body, screens will handle their own scroll */
+        }
+        .screen {
+            width: 100vw;
+            height: 100vh; /* Ensure it occupies 100% of the viewport height */
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center content horizontally within the screen */
+            justify-content: center; /* Center content vertically if shorter than the screen */
+            padding: 2rem 1rem;
+            box-sizing: border-box; /* Include padding in total width/height */
+            position: fixed; /* Fixed positioning to cover the entire screen */
+            top: 0;
+            left: 0;
+            transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out; /* Transition for screen change */
+            transform: translateX(100%); /* Hide to the right by default */
+            opacity: 0; /* Start with 0 opacity */
+            visibility: hidden; /* Hide completely */
+            background-color: #0b1a3d; /* Ensure background color for each screen */
+        }
+        .screen.active {
+            transform: translateX(0); /* Show in the center */
+            opacity: 1; /* Show with 1 opacity */
+            visibility: visible; /* Make visible */
+            z-index: 10; /* Ensure the active screen is on top */
+        }
+        .main-menu-screen {
+            transform: translateX(0); /* Main screen always visible at start */
+            opacity: 1;
+            visibility: visible;
+            z-index: 5; /* Lower z-index for main screen when not active */
+        }
+
+        /* Wrapper for scrollable content */
+        .screen-content-wrapper {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1; /* Allows this wrapper to take available space on the screen */
+            width: 100%;
+            max-width: 2xl; /* Limit for content width */
+            overflow-y: auto; /* This wrapper handles scrolling */
+            -webkit-overflow-scrolling: touch; /* Improve scrolling on iOS */
+            padding-top: 0.5rem; /* Internal padding so content doesn't stick to the top */
+            padding-bottom: 0.5rem; /* Internal padding so content doesn't stick to the bottom */
+            box-sizing: border-box;
+        }
+
+        .menu-card {
+            background-color: #1e3a8a; /* Lighter blue tone for cards */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 1rem;
+            overflow: hidden; /* Ensure content doesn't overflow */
+            width: 100%;
+            flex-shrink: 0; /* Prevent shrinking if there's a lot of space */
+        }
+        .menu-item {
+            cursor: pointer;
+            padding: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+            display: block;
+            width: 100%;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .menu-item:last-child {
+            border-bottom: none; /* Remove bottom border from the last menu item */
+        }
+        .menu-item:hover {
+            background-color: #2a4c9b; /* Darker tone on hover */
+        }
+        .program-details-content { /* Internal content of program details */
+            background-color: #1a2c52; /* Background for details */
+            border-radius: 1rem;
+            padding: 1rem; /* Internal padding of program content */
+            width: 100%;
+            flex-shrink: 0; /* Prevent shrinking */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex; /* Use flexbox for internal alignment */
+            flex-direction: column;
+            align-items: flex-start; /* Align text content to the left */
+            text-align: left; /* Ensure text within program-details-content aligns left */
+        }
+        .price-badge {
+            background-color: #ef4444; /* Vibrant red */
+            border-radius: 9999px;
+            width: 7.5rem; /* Adjusted to fit better */
+            height: 7.5rem; /* Adjusted to fit better */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.25rem; /* Adjusted */
+            font-weight: bold;
+            color: #ffffff;
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+            margin: 0.8rem auto 0; /* Center and space */
+        }
+        .contact-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 1.5rem;
+            width: 100%; /* Ensure container takes full width to center its content */
+        }
+        .contact-icon-outside { /* Style for the outside icon */
+            width: 10.8em; /* Increased size (7.2em * 1.5) */
+            height: 10.8em; /* Increased size (7.2em * 1.5) */
+            margin-right: 0.75rem; /* Space between icon and button */
+        }
+        .contact-info-program {
+            background-color: #38b2ac; /* Turquoise color for contact background */
+            border-radius: 9999px;
+            padding: 0.6rem 1.2rem; /* Adjusted to fit better */
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem; /* Adjusted */
+            font-weight: bold;
+            color: #ffffff;
+            text-decoration: none;
+        }
+        ul.styled-list {
+            list-style: none;
+            padding-left: 0;
+            margin-bottom: 0.4rem; /* Reduced space */
+            font-size: 0.85rem; /* Slightly reduced */
+            line-height: 1.25; /* Line height adjustment */
+            text-align: left; /* Align list text to the left */
+            width: 100%; /* Ensure list takes full width */
+        }
+        ul.styled-list > li:before { /* Apply bullet only to direct 'li' children */
+            content: '•';
+            color: #38b2ac;
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
+        }
+        ul.nested-list {
+            list-style: decimal;
+            padding-left: 0.8rem; /* Slightly reduced */
+            margin-top: 0.2rem; /* Reduced space */
+            font-size: 0.8rem; /* Slightly reduced */
+        }
+        ul.nested-list li::before { /* Remove custom bullet from nested lists */
+            content: none;
+        }
+        ul.nested-list li {
+            margin-bottom: 0.1rem; /* Space between nested list items */
+        }
+
+        /* Colors for program titles */
+        .program-title-basico {
+            color: #90EE90; /* Light green */
+        }
+        .program-title-intermedio {
+            color: #ADD8E6; /* Light blue */
+        }
+        .program-title-progresivo {
+            color: #FFD700; /* Gold */
+        }
+        .program-title-completo {
+            color: #FF6347; /* Tomato red */
+        }
+
+        .back-button {
+            background-color: #555;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            position: fixed; /* Ensure back button is fixed in the viewport */
+            top: 1rem;
+            left: 1rem;
+            z-index: 20; /* Ensure it's on top of everything */
+        }
+        .back-button:hover {
+            background-color: #777;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Main Menu Screen -->
+    <div id="main-menu-screen" class="screen main-menu-screen">
+        <div class="screen-content-wrapper">
+            <main class="w-full max-w-2xl menu-card">
+                <!-- Menu Cover -->
+                <div class="relative w-full h-auto py-8 bg-gradient-to-b from-blue-900 to-indigo-800 flex flex-col justify-center items-center p-4 rounded-t-xl">
+                    <!-- Pawdrinos Logo -->
+                    <img src="https://i.postimg.cc/bvYtLv9S/0cb735b2-d74b-4e60-81f4-6697d51a4cbd.png" alt="Logo de Pawdrinos" class="h-80 w-auto mb-4 object-contain" onerror="this.onerror=null;this.src='https://placehold.co/320x320/0b1a3d/ffffff?text=LOGO+AQUI';">
+                    <h1 class="text-3xl md:text-4xl font-extrabold text-center mb-2">PAWDRINOS</h1>
+                    <!-- Modified Subtitle in two centered lines -->
+                    <p class="text-xl md:text-2xl text-gray-200 text-center leading-tight">Programas de Obediencia</p>
+                    <p class="text-xl md:text-2xl text-gray-200 text-center mb-8 leading-tight">Con Correa</p>
+                    <!-- Dog Image: Circular and at the bottom of the cover -->
+                    <img src="https://i.postimg.cc/bv625jmC/DOG.png" alt="Perro Amigable" class="w-56 h-56 rounded-full object-cover border-4 border-white" onerror="this.onerror=null;this.src='https://placehold.co/224x224/1e3a8a/ffffff?text=PERRO+AQUI';">
+                </div>
+
+                <!-- Menu Options -->
+                <nav class="border-b border-gray-700">
+                    <button class="menu-item" data-target-screen="program-basico-screen">Programa Básico</button>
+                    <button class="menu-item" data-target-screen="program-intermedio-screen">Programa Intermedio</button>
+                    <button class="menu-item" data-target-screen="program-progresivo-screen">Programa Progresivo</button>
+                    <button class="menu-item" data-target-screen="program-completo-screen">Programa Completo</button>
+                </nav>
+            </main>
+        </div>
+    </div>
+
+    <!-- Basic Program Screen -->
+    <div id="program-basico-screen" class="screen">
+        <button class="back-button" data-target-screen="main-menu-screen">Volver</button>
+        <div class="screen-content-wrapper">
+            <div class="program-details-content">
+                <h3 class="text-2xl font-semibold mb-3 program-title-basico">Programa Básico (4 Sesiones)</h3>
+                <ul class="styled-list">
+                    <li>Introducción teórica al adiestramiento canino</li>
+                    <li>Método para que aprendan a hacer necesidades en un lugar</li>
+                    <li>Comandos básicos de obediencia: sentado, echado, llamado, caminata con correa</li>
+                </ul>
+                <div class="price-badge">$200</div>
+                <div class="contact-container">
+                    <img src="https://i.postimg.cc/Hs4nKgxw/DOG-1.png" alt="WhatsApp Icon" class="contact-icon-outside" onerror="this.onerror=null;this.src='https://placehold.co/32x32/38b2ac/ffffff?text=WA';">
+                    <a href="https://wa.me/50688311957" target="_blank" class="contact-info-program">
+                        88311957
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Intermediate Program Screen -->
+    <div id="program-intermedio-screen" class="screen">
+        <button class="back-button" data-target-screen="main-menu-screen">Volver</button>
+        <div class="screen-content-wrapper">
+            <div class="program-details-content">
+                <h3 class="text-2xl font-semibold mb-3 program-title-intermedio">Programa Intermedio (6 Sesiones)</h3>
+                <ul class="styled-list">
+                    <li>Introducción teórica al adiestramiento canino</li>
+                    <li>Método para que aprendan a hacer necesidades en un lugar</li>
+                    <li>Comandos básicos de obediencia:
+                        <ul class="nested-list">
+                            <li>Llamado</li>
+                            <li>Sentado</li>
+                            <li>Echado</li>
+                            <li>Caminata con correa</li>
+                            <li>Quieto</li>
+                            <li>Comando NO</li>
+                            <li>Ir a tu sitio</li>
+                        </ul>
+                    </li>
+                </ul>
+                <div class="price-badge">$290</div>
+                <div class="contact-container">
+                    <img src="https://i.postimg.cc/Hs4nKgxw/DOG-1.png" alt="WhatsApp Icon" class="contact-icon-outside" onerror="this.onerror=null;this.src='https://placehold.co/32x32/38b2ac/ffffff?text=WA';">
+                    <a href="https://wa.me/50688311957" target="_blank" class="contact-info-program">
+                        88311957
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Progressive Program Screen -->
+    <div id="program-progresivo-screen" class="screen">
+        <button class="back-button" data-target-screen="main-menu-screen">Volver</button>
+        <div class="screen-content-wrapper">
+            <div class="program-details-content">
+                <h3 class="text-2xl font-semibold mb-3 program-title-progresivo">Programa Progresivo (8 Sesiones)</h3>
+                <ul class="styled-list">
+                    <li>Introducción teórica al adiestramiento canino</li>
+                    <li>Método para que aprendan a hacer necesidades en un lugar</li>
+                    <li>Comandos básicos de obediencia:
+                        <ul class="nested-list">
+                            <li>Llamado</li>
+                            <li>Sentado</li>
+                            <li>Echado</li>
+                            <li>Caminata con correa</li>
+                            <li>Quieto</li>
+                            <li>Comando NO</li>
+                            <li>Ir a tu sitio</li>
+                            <li>Junto</li>
+                        </ul>
+                    </li>
+                </ul>
+                <div class="price-badge">$380</div>
+                <div class="contact-container">
+                    <img src="https://i.postimg.cc/Hs4nKgxw/DOG-1.png" alt="WhatsApp Icon" class="contact-icon-outside" onerror="this.onerror=null;this.src='https://placehold.co/32x32/38b2ac/ffffff?text=WA';">
+                    <a href="https://wa.me/50688311957" target="_blank" class="contact-info-program">
+                        88311957
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Complete Program Screen -->
+    <div id="program-completo-screen" class="screen">
+        <button class="back-button" data-target-screen="main-menu-screen">Volver</button>
+        <div class="screen-content-wrapper">
+            <div class="program-details-content">
+                <h3 class="text-2xl font-semibold mb-3 program-title-completo">Programa Completo (12 Sesiones)</h3>
+                <ul class="styled-list">
+                    <li>Introducción teórica al adiestramiento canino</li>
+                    <li>Método para que aprendan a hacer necesidades en un lugar</li>
+                    <li>Obediencia intermedia:
+                        <ul class="nested-list">
+                            <li>Llamado</li>
+                            <li>Sentado</li>
+                            <li>Echado</li>
+                            <li>Caminata con correa</li>
+                            <li>Quieto</li>
+                            <li>Comando NO</li>
+                            <li>Ir a tu sitio</li>
+                            <li>Junto</li>
+                            <li>No salir del lugar</li>
+                            <li>De pie</li>
+                            <li>Ejercicio de cobro</li>
+                            <li>Ejercicio de búsqueda</li>
+                        </ul>
+                    </li>
+                </ul>
+                <div class="price-badge">$550</div>
+                <div class="contact-container">
+                    <img src="https://i.postimg.cc/Hs4nKgxw/DOG-1.png" alt="WhatsApp Icon" class="contact-icon-outside" onerror="this.onerror=null;this.src='https://placehold.co/32x32/38b2ac/ffffff?text=WA';">
+                    <a href="https://wa.me/50688311957" target="_blank" class="contact-info-program">
+                        88311957
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const screens = document.querySelectorAll('.screen');
+            const menuButtons = document.querySelectorAll('.menu-item');
+            const backButtons = document.querySelectorAll('.back-button');
+            let lastScrollPosition = 0; // Variable to store the scroll position
+
+            // Function to show a specific screen and hide others
+            function showScreen(screenId) {
+                screens.forEach(screen => {
+                    if (screen.id === screenId) {
+                        screen.classList.add('active');
+                        const contentWrapper = screen.querySelector('.screen-content-wrapper');
+                        if (contentWrapper) {
+                            // If returning to main menu, restore scroll position
+                            if (screenId === 'main-menu-screen') {
+                                setTimeout(() => {
+                                    contentWrapper.scrollTo({ top: lastScrollPosition, behavior: 'instant' });
+                                }, 50);
+                            } else {
+                                // For program screens, scroll to top
+                                setTimeout(() => {
+                                    contentWrapper.scrollTo({ top: 0, behavior: 'instant' });
+                                }, 50);
+                            }
+                        }
+                    } else {
+                        screen.classList.remove('active');
+                    }
+                });
+            }
+
+            // Hide all screens except the main menu at start
+            showScreen('main-menu-screen');
+
+            // Event listeners for menu buttons
+            menuButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Save scroll posit
