@@ -112,7 +112,7 @@
             font-size: 2.25rem; /* Adjusted */
             font-weight: bold;
             color: #ffffff;
-            box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
             margin: 0.8rem auto 0; /* Center and space */
         }
         .contact-container {
@@ -121,11 +121,12 @@
             justify-content: center;
             margin-top: 1.5rem;
             width: 100%; /* Ensure container takes full width to center its content */
+            /* Removed transform: translateX to allow proper centering */
         }
         .contact-icon-outside { /* Style for the outside icon */
             width: 6em; /* Adjusted size (5em * 1.2) */
             height: 6em; /* Adjusted size (5em * 1.2) */
-            margin-right: 1rem; /* Adjusted: moved slightly more to the left */
+            margin-right: 0.25rem; /* Adjusted: moved closer */
         }
         .contact-info-program {
             background-color: #38b2ac; /* Turquoise color for contact background */
