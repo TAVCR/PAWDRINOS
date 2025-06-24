@@ -25,7 +25,7 @@
             display: flex;
             flex-direction: column;
             align-items: center; /* Center content horizontally within the screen */
-            justify-content: center; /* Center content vertically if shorter than the screen */
+            justify-content: flex-start; /* Aligns content to the top */
             padding: 2rem 1rem;
             box-sizing: border-box; /* Include padding in total width/height */
             position: fixed; /* Fixed positioning to cover the entire screen */
@@ -62,6 +62,9 @@
             padding-top: 0.5rem; /* Internal padding so content doesn't stick to the top */
             padding-bottom: 0.5rem; /* Internal padding so content doesn't stick to the bottom */
             box-sizing: border-box;
+            /* Added for vertical centering if content is short, and align-top if long */
+            margin-top: auto;
+            margin-bottom: auto;
         }
 
         .menu-card {
@@ -123,8 +126,8 @@
             width: 100%; /* Ensure container takes full width to center its content */
         }
         .contact-icon-outside { /* Style for the outside icon */
-            width: 10.8em; /* Increased size (7.2em * 1.5) */
-            height: 10.8em; /* Increased size (7.2em * 1.5) */
+            width: 10.8em; /* Increased size */
+            height: 10.8em; /* Increased size */
             margin-right: 0.75rem; /* Space between icon and button */
         }
         .contact-info-program {
@@ -391,4 +394,24 @@
             // Event listeners for menu buttons
             menuButtons.forEach(button => {
                 button.addEventListener('click', () => {
-                    // Save scroll posit
+                    // Save scroll position of main menu before navigating away
+                    const mainMenuWrapper = document.getElementById('main-menu-screen').querySelector('.screen-content-wrapper');
+                    if (mainMenuWrapper) {
+                        lastScrollPosition = mainMenuWrapper.scrollTop;
+                    }
+                    const targetScreenId = button.dataset.targetScreen;
+                    showScreen(targetScreenId);
+                });
+            });
+
+            // Event listeners for "Back" buttons
+            backButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetScreenId = button.dataset.targetScreen;
+                    showScreen(targetScreenId);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
